@@ -1,0 +1,10 @@
+{
+    "version": "v402",
+    "date": "1646537176",
+    "variants": [
+{ "name": "treble_a64_bgS", "size": 797909376, "url": "https://builds.haridhayal.workers.dev/ProtonAOSP/2022_03_06/proton-12.2.3-a64_bgS.img.xz"},
+{ "name": "treble_a64_bvS", "size": 482309356, "url": "https://builds.haridhayal.workers.dev/ProtonAOSP/2022_03_06/proton-12.2.3-a64_bvS.img.xz"},
+{ "name": "treble_arm64_bgS", "size": 920386572, "url": "https://builds.haridhayal.workers.dev/ProtonAOSP/2022_03_06/proton-12.2.3-arm64_bgS.img.xz"},
+{ "name": "treble_arm64_bvS", "size": 589782788, "url": "https://builds.haridhayal.workers.dev/ProtonAOSP/2022_03_06/proton-12.2.3-arm64_bvS.img.xz"},
+    ]
+}
