@@ -1,7 +1,7 @@
-From 9379d2f4c1bb14469077c7ef3df46927f464435b Mon Sep 17 00:00:00 2001
+From f2018b1718f67e52e6bd5cd07b88845521f78ce8 Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Sun, 25 Oct 2020 23:57:26 +0100
-Subject: [PATCH 12/31] Re-implement fnmatch-like behaviour for RRO java-side
+Subject: [PATCH 12/34] Re-implement fnmatch-like behaviour for RRO java-side
 
 Change-Id: Id38292a9a1453aa87b8401c1fdb390fa4e63c7d1
 ---

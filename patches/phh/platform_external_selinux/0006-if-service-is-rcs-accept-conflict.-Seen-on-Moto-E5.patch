@@ -1,4 +1,4 @@
-From 2580e132796877b8d1f7fb53f0ba8fad091c7f5b Mon Sep 17 00:00:00 2001
+From 91b16bd9f23e3b98175598ac88c1bce22619deac Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Thu, 12 Sep 2019 20:37:04 +0200
 Subject: [PATCH 6/8] if service is "rcs", accept conflict. Seen on Moto E5
@@ -9,7 +9,7 @@ Change-Id: I0cc2d0fad83f403f2b5d7458039b1564ce5ed9dd
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/libselinux/src/label_backends_android.c b/libselinux/src/label_backends_android.c
-index d81faabe..1e4513e9 100644
+index 121b52f5..57723a7b 100644
 --- a/libselinux/src/label_backends_android.c
 +++ b/libselinux/src/label_backends_android.c
 @@ -62,14 +62,24 @@ static int nodups_specs(struct saved_data *data)
