@@ -1,0 +1,39 @@
+From 1d13abd3a1321a793ecb78cd1e10f70e6f8d62e8 Mon Sep 17 00:00:00 2001
+From: haridhayal11 <haridhayal@gmail.com>
+Date: Thu, 2 Jun 2022 16:45:59 +0000
+Subject: [PATCH] Revert "SystemUI: Use Pixel UDFPS HBM provider"
+
+This reverts commit 3db926d90d605544ef610778e1052e83c5962de2.
+
+Signed-off-by: haridhayal11 <haridhayal@gmail.com>
+---
+ .../src/com/android/systemui/dagger/SystemUIModule.java     | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/dagger/SystemUIModule.java b/packages/SystemUI/src/com/android/systemui/dagger/SystemUIModule.java
+index d188370fd7af..12786f278a16 100644
+--- a/packages/SystemUI/src/com/android/systemui/dagger/SystemUIModule.java
++++ b/packages/SystemUI/src/com/android/systemui/dagger/SystemUIModule.java
+@@ -85,8 +85,6 @@ import com.android.systemui.wallet.dagger.WalletModule;
+ import com.android.systemui.wmshell.BubblesManager;
+ import com.android.wm.shell.bubbles.Bubbles;
+ 
+-import org.protonaosp.systemui.PixelUdfpsHbmProvider;
+-
+ import java.util.Optional;
+ import java.util.concurrent.Executor;
+ 
+@@ -180,10 +178,6 @@ public abstract class SystemUIModule {
+     @BindsOptionalOf
+     abstract UdfpsHbmProvider optionalUdfpsHbmProvider();
+ 
+-    @SysUISingleton
+-    @Binds
+-    abstract UdfpsHbmProvider bindUdfpsHbmProvider(PixelUdfpsHbmProvider provider);
+-
+     @SysUISingleton
+     @Binds
+     abstract SystemClock bindSystemClock(SystemClockImpl systemClock);
+-- 
+2.34.1
+

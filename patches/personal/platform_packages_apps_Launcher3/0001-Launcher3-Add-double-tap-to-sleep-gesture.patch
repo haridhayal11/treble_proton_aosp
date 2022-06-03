@@ -1,0 +1,188 @@
+From f7854905b447166b13fcc6ea54e7c6f986263db0 Mon Sep 17 00:00:00 2001
+From: haridhayal11 <haridhayal@gmail.com>
+Date: Thu, 2 Jun 2022 17:25:02 +0000
+Subject: [PATCH] Launcher3: Add double tap to sleep gesture
+
+* based on
+ https://github.com/crdroidandroid/android_packages_apps_Launcher3/commit/1ced8c431b3a8ccb397199f68e1dd1ac401a90d4
+ https://github.com/crdroidandroid/android_packages_apps_Launcher3/commit/2581d966c61bbfca344803eb443f5426abf2348a
+
+Adapted to protonaosp by haridhayal11
+
+Signed-off-by: haridhayal11 <haridhayal@gmail.com>
+---
+ AndroidManifest-common.xml                    |  5 ++++-
+ AndroidManifest.xml                           |  5 ++++-
+ res/values/strings.xml                        |  4 ++++
+ res/xml/launcher_preferences.xml              |  7 +++++++
+ src/com/android/launcher3/Utilities.java      |  7 +++++++
+ src/com/android/launcher3/Workspace.java      | 21 +++++++++++++++++++
+ .../touch/WorkspaceTouchListener.java         |  1 +
+ 7 files changed, 48 insertions(+), 2 deletions(-)
+
+diff --git a/AndroidManifest-common.xml b/AndroidManifest-common.xml
+index 530b9ca528..bf92884e03 100644
+--- a/AndroidManifest-common.xml
++++ b/AndroidManifest-common.xml
+@@ -19,7 +19,9 @@
+ -->
+ <manifest
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.android.launcher3">
++    package="com.android.launcher3"
++    coreApp="true"
++    android:sharedUserId="android.uid.system">
+ 
+     <!--
+     The manifest defines the common entries that should be present in any derivative of Launcher3.
+@@ -39,6 +41,7 @@
+     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
+     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
++    <uses-permission android:name="android.permission.DEVICE_POWER" />
+     <!-- for rotating surface by arbitrary degree -->
+     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
+     
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 63180e8871..46d564f8fc 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -19,7 +19,10 @@
+ -->
+ <manifest
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.android.launcher3">
++    package="com.android.launcher3"
++    coreApp="true"
++    android:sharedUserId="android.uid.system">
++
+     <uses-sdk android:targetSdkVersion="29" android:minSdkVersion="26"/>
+     <!--
+     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 868b5f39b8..b59a42ee65 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -426,4 +426,8 @@
+ 
+     <!-- Failed action error message: e.g. Failed: Pause -->
+     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
++
++    <!-- DT2S option -->
++    <string name="pref_sleep_gesture_title">Double tap to sleep</string>
++    <string name="pref_sleep_gesture_summary">Double tap on empty space for power-off screen</string>
+ </resources>
+diff --git a/res/xml/launcher_preferences.xml b/res/xml/launcher_preferences.xml
+index 5d3c9b08c7..4341f9feb8 100644
+--- a/res/xml/launcher_preferences.xml
++++ b/res/xml/launcher_preferences.xml
+@@ -37,6 +37,13 @@
+         launcher:logIdOn="613"
+         launcher:logIdOff="614" />
+ 
++    <SwitchPreference
++        android:key="pref_sleep_gesture"
++        android:title="@string/pref_sleep_gesture_title"
++        android:summary="@string/pref_sleep_gesture_summary"
++        android:defaultValue="true"
++        android:persistent="true"/>
++
+     <!--
+       LAUNCHER_HOME_SCREEN_ROTATION_ENABLED(615)
+       LAUNCHER_HOME_SCREEN_ROTATION_DISABLED(616)
+diff --git a/src/com/android/launcher3/Utilities.java b/src/com/android/launcher3/Utilities.java
+index d2fe483c96..31a830be2b 100644
+--- a/src/com/android/launcher3/Utilities.java
++++ b/src/com/android/launcher3/Utilities.java
+@@ -160,6 +160,9 @@ public final class Utilities {
+     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
+     public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
+ 
++    // DT2S
++    public static final String SLEEP_GESTURE = "pref_sleep_gesture";
++
+     // An intent extra to indicate the launch source by launcher.
+     public static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
+             "com.android.wallpaper.LAUNCH_SOURCE";
+@@ -171,6 +174,10 @@ public final class Utilities {
+         IS_RUNNING_IN_TEST_HARNESS = true;
+     }
+ 
++    public static boolean useSleepGesture(Context context) {
++        return getPrefs(context).getBoolean(SLEEP_GESTURE, true);
++    }
++
+     public static boolean isPropertyEnabled(String propertyName) {
+         return Log.isLoggable(propertyName, Log.VERBOSE);
+     }
+diff --git a/src/com/android/launcher3/Workspace.java b/src/com/android/launcher3/Workspace.java
+index 281dfea492..886d0ee0e5 100644
+--- a/src/com/android/launcher3/Workspace.java
++++ b/src/com/android/launcher3/Workspace.java
+@@ -49,12 +49,15 @@ import android.graphics.drawable.Drawable;
+ import android.os.Handler;
+ import android.os.Message;
+ import android.os.Parcelable;
++import android.os.PowerManager;
+ import android.os.UserHandle;
+ import android.util.AttributeSet;
+ import android.util.Log;
+ import android.util.SparseArray;
+ import android.view.LayoutInflater;
++import android.view.GestureDetector;
+ import android.view.MotionEvent;
++import android.view.GestureDetector;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.view.ViewTreeObserver;
+@@ -263,6 +266,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
+ 
+     // Handles workspace state transitions
+     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
++    private GestureDetector mGestureListener;
+ 
+     private final StatsLogManager mStatsLogManager;
+ 
+@@ -297,10 +301,27 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
+ 
+         // Disable multitouch across the workspace/all apps/customize tray
+         setMotionEventSplittingEnabled(true);
++
++        final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
++
++        mGestureListener =
++                new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
++            @Override
++            public boolean onDoubleTap(MotionEvent event) {
++                if (Utilities.useSleepGesture(context)) {
++                    pm.goToSleep(event.getEventTime());
++                }
++                return true;
++            }
++        });
+         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
+         mStatsLogManager = StatsLogManager.newInstance(context);
+     }
+ 
++    public boolean checkDoubleTap(MotionEvent ev) {
++        return mGestureListener.onTouchEvent(ev);
++    }
++
+     @Override
+     public void setInsets(Rect insets) {
+         DeviceProfile grid = mLauncher.getDeviceProfile();
+diff --git a/src/com/android/launcher3/touch/WorkspaceTouchListener.java b/src/com/android/launcher3/touch/WorkspaceTouchListener.java
+index 20d2ad36a5..53155fad19 100644
+--- a/src/com/android/launcher3/touch/WorkspaceTouchListener.java
++++ b/src/com/android/launcher3/touch/WorkspaceTouchListener.java
+@@ -81,6 +81,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
+     @Override
+     public boolean onTouch(View view, MotionEvent ev) {
+         mGestureDetector.onTouchEvent(ev);
++	mWorkspace.checkDoubleTap(ev);
+ 
+         int action = ev.getActionMasked();
+         if (action == ACTION_DOWN) {
+-- 
+2.34.1
+
