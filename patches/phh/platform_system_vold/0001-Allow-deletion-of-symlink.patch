@@ -1,9 +1,10 @@
-From 53eb65b5db04b3cba7084049e8b447a170de2db8 Mon Sep 17 00:00:00 2001
+From 1401f0d8b799a0fb5d9afa95a2f032fc350a6479 Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Sat, 17 Feb 2018 19:39:38 +0100
-Subject: [PATCH 1/7] Allow deletion of symlink
+Subject: [PATCH 1/6] Allow deletion of symlink
 
 Change-Id: I9731895f88729072297f753088583aabbe6990f4
+Signed-off-by: haridhayal11 <haridhayal@gmail.com>
 ---
  FsCrypt.cpp | 1 +
  1 file changed, 1 insertion(+)
@@ -21,5 +22,5 @@ index 04def5c..c7de48e 100644
          return false;
      }
 -- 
-2.25.1
+2.34.1
 

@@ -1,8 +1,9 @@
-From aab2113e015344bd666b5703831ea00183e59aa7 Mon Sep 17 00:00:00 2001
+From dc5c36ef133cf9ee17ce7f5f3ea69c2d48868199 Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Tue, 28 Jan 2020 00:27:17 +0100
-Subject: [PATCH 3/7] Sony has `texfat` exfat fs
+Subject: [PATCH 3/6] Sony has `texfat` exfat fs
 
+Signed-off-by: haridhayal11 <haridhayal@gmail.com>
 ---
  fs/Exfat.cpp | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
@@ -34,5 +35,5 @@ index 91a4c50..6c49c10 100644
          return 0;
      }
 -- 
-2.25.1
+2.34.1
 
