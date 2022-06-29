@@ -1,4 +1,4 @@
-From c863dd2e4f6c0db621430a21557f02c49733fd26 Mon Sep 17 00:00:00 2001
+From ac01e4a4a25300d8f0f1fc9bdb2201a78dc2f771 Mon Sep 17 00:00:00 2001
 From: Ryan Press <ryan@presslab.us>
 Date: Tue, 25 Jan 2022 11:29:41 -0800
 Subject: [PATCH 5/5] Fix Huawei signal strength indicator

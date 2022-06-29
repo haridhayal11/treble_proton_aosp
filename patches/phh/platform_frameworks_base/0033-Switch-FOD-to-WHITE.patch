@@ -1,7 +1,7 @@
-From ebee170a20efa448983a7c09948c10121fbe5f8f Mon Sep 17 00:00:00 2001
+From 5c703a0b905fe16873000140d6e5248f609ea3d1 Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Mon, 2 May 2022 18:02:25 -0400
-Subject: [PATCH 33/34] Switch FOD to WHITE
+Subject: [PATCH 33/35] Switch FOD to WHITE
 
 ---
  .../src/com/android/systemui/biometrics/UdfpsSurfaceView.java   | 2 +-

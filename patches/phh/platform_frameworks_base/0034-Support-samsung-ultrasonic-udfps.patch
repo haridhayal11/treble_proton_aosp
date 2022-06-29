@@ -1,7 +1,7 @@
-From 3c2e50c2e982cb4f09d722b7593b6291244af853 Mon Sep 17 00:00:00 2001
+From c53b58bb69f8296e31b31572460655a36c5e594c Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Mon, 2 May 2022 18:02:40 -0400
-Subject: [PATCH 34/34] Support samsung ultrasonic udfps
+Subject: [PATCH 34/35] Support samsung ultrasonic udfps
 
 ---
  .../systemui/biometrics/UdfpsView.java        |  4 +++-

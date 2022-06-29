@@ -1,14 +1,12 @@
-From 46a618b4275e8bfd911d8bc78c42d6d206c07f16 Mon Sep 17 00:00:00 2001
+From 48cfe2601115f37e0896b86a48a59075e993ec01 Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Sat, 7 Mar 2020 14:49:09 +0100
-Subject: [PATCH 4/6] Failing to create facedata shouldn't be fatal
+Subject: [PATCH 4/7] Failing to create facedata shouldn't be fatal
 
 Some Pie vendors create it on their own, so SELinux would deny that
 Also not all devices have face unlock anyway
 
 See https://github.com/phhusson/treble_experimentations/issues/1119
-
-Signed-off-by: haridhayal11 <haridhayal@gmail.com>
 ---
  vold_prepare_subdirs.cpp | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -36,5 +34,5 @@ index e2afb81..de863ff 100644
          }
      }
 -- 
-2.34.1
+2.25.1
 
